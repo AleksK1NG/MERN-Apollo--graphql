@@ -16,16 +16,16 @@ module.exports = gql`
     username: String!
   }
 
-  input LoginInput {
-    email: String!
-    password: String!
-  }
-
   input RegisterInput {
     username: String!
     password: String!
     confirmPassword: String!
     email: String!
+  }
+
+  input LoginInput {
+    email: String!
+    password: String!
   }
 
   type Query {
