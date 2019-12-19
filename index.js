@@ -1,4 +1,11 @@
+const dotenv = require('dotenv')
 const { ApolloServer, gql } = require('apollo-server')
+const connectDB = require('./db/db')
+
+// Load .env files
+dotenv.config({ path: './config/config.env' })
+
+connectDB()
 
 const typeDefs = gql`
   type Query {
