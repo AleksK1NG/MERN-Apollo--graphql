@@ -1,6 +1,8 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const User = require('../../models/User')
+const { UserInputError } = require('apollo-server')
+const { validateLoginInput, validateRegisterInput } = require('../../utils/validators')
 
 module.exports = {
   Mutation: {
@@ -9,26 +11,38 @@ module.exports = {
         registerInput: { username, email, password, confirmPassword },
       } = args
 
-      try {
-        // const checkUser = await User.find({ email })
-        // if (checkUser) return
+      console.log(password, confirmPassword)
+      const { valid, errors } = validateRegisterInput(username, email, password, confirmPassword)
+      if (!valid) throw new UserInputError('Errors', { errors })
 
-        const hashedPassword = await bcrypt.hash(password, 12)
+      const checkUser = await User.findOne({ email })
+      if (checkUser)
+        throw new UserInputError(`User with email ${email} already exits`, {
+          errors: {
+            email: `User with email ${email} already exits`,
+          },
+        })
 
-        const user = await User.create({ email, username, password: hashedPassword, createdAt: new Date().toISOString() })
+      const hashedPassword = await bcrypt.hash(password, 12)
 
-        const token = jwt.sign({ id: user.id, email: user.email, username: user.username }, process.env.JWT_SECRET, { expiresIn: '1h' })
+      const user = await User.create({ email, username, password: hashedPassword, createdAt: new Date().toISOString() })
 
-        console.log(' user ', user._doc)
-
-        return {
-          ...user._doc,
+      const token = jwt.sign(
+        {
           id: user.id,
-          token,
-        }
-      } catch (e) {
-        console.error(e)
-        throw new Error(e)
+          email: user.email,
+          username: user.username,
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' },
+      )
+
+      console.log(' user ', user._doc)
+
+      return {
+        ...user._doc,
+        id: user.id,
+        token,
       }
     },
   },
