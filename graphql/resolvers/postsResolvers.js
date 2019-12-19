@@ -1,11 +1,12 @@
 const Post = require('../../models/Post')
 const { checkAuth } = require('../../utils/check-auth')
+const { AuthenticationError } = require('apollo-server')
 
 module.exports = {
   Query: {
     getAllPosts: async () => {
       try {
-        const posts = await Post.find()
+        const posts = await Post.find().sort({ createdAt: -1 })
 
         return posts
       } catch (error) {
@@ -35,6 +36,22 @@ module.exports = {
         const post = await Post.create({ body, user: user.id, username: user.username, createdAt: new Date().toISOString() })
 
         return post
+      } catch (error) {
+        console.error(error)
+        throw new Error(error)
+      }
+    },
+
+    deletePost: async (parent, { postId }, context, info) => {
+      try {
+        const user = checkAuth(context)
+
+        const post = Post.findById(postId)
+        if (!post) throw new Error(`Post with id ${postId} not found`)
+        if (!post.username === user.username) throw new AuthenticationError('Unauthorized')
+
+        await Post.findOneAndDelete({ _id: postId })
+        return `Post with id ${postId} successfully deleted`
       } catch (error) {
         console.error(error)
         throw new Error(error)
