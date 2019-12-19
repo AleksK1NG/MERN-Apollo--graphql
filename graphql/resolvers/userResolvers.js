@@ -11,7 +11,6 @@ module.exports = {
         registerInput: { username, email, password, confirmPassword },
       } = args
 
-      console.log(password, confirmPassword)
       const { valid, errors } = validateRegisterInput(username, email, password, confirmPassword)
       if (!valid) throw new UserInputError('Errors', { errors })
 
@@ -37,13 +36,40 @@ module.exports = {
         { expiresIn: '1h' },
       )
 
-      console.log(' user ', user._doc)
-
       return {
         ...user._doc,
         id: user.id,
         token,
       }
     },
+  },
+
+  async login(parent, args, context, info) {
+    const {
+      loginInput: { email, password },
+    } = args
+
+    const { valid, errors } = validateLoginInput(email, password)
+    if (!valid) throw new UserInputError('Errors', { errors })
+
+    const user = await User.findOne({ email })
+    if (!user)
+      throw new UserInputError(`Invalid email or password`, {
+        errors: {
+          general: `Invalid email or password`,
+        },
+      })
+
+    const isMatch = await bcrypt.compare(password, user.password)
+    if (!isMatch)
+      throw new UserInputError(`Invalid email or password`, {
+        errors: {
+          general: `Invalid email or password`,
+        },
+      })
+
+    
+
+
   },
 }
