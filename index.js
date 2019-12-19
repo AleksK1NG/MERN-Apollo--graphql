@@ -9,7 +9,7 @@ dotenv.config({ path: './config/config.env' })
 
 connectDB()
 
-const server = new ApolloServer({ typeDefs, resolvers })
+const server = new ApolloServer({ typeDefs, resolvers, context: ({ req, res }) => ({ req }) })
 
 const PORT = process.env.PORT || 5000
 
