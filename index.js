@@ -7,15 +7,33 @@ dotenv.config({ path: './config/config.env' })
 
 connectDB()
 
+const Post = require('./models/Post')
+
 const typeDefs = gql`
+  type Post {
+    id: ID!
+    username: String!
+    createdAt: String!
+    body: String!
+  }
+
   type Query {
-    sayHi: String!
+    getAllPosts: [Post]
   }
 `
 
 const resolvers = {
   Query: {
-    sayHi: () => 'Apollo server =D',
+    getAllPosts: async () => {
+      try {
+        const posts = await Post.find()
+
+        return posts
+      } catch (error) {
+        console.error(error)
+        throw new Error(error)
+      }
+    },
   },
 }
 
