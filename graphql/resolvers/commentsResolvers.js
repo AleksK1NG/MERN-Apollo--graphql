@@ -1,49 +1,52 @@
-const User = require('../../models/User')
 const Post = require('../../models/Post')
 const { checkAuth } = require('../../utils/check-auth')
 const { AuthenticationError, UserInputError } = require('apollo-server')
 
 module.exports = {
   Mutation: {
-    createComment: async (parent, { body, postId }, ctx, info) => {
-      try {
-        const { username } = checkAuth(ctx)
-        if (body.trim === '')
-          throw new UserInputError('Comment must not be empty', {
-            errors: { body: 'Comment must not be empty' },
-          })
+    createComment: async (_, { postId, body }, context) => {
+      const { username } = checkAuth(context)
+      if (body.trim() === '') {
+        throw new UserInputError('Empty comment', {
+          errors: {
+            body: 'Comment body must not empty',
+          },
+        })
+      }
 
-        const post = await Post.findById(postId)
-        if (!post) throw new Error(`Post with id ${postId} not found`)
+      const post = await Post.findById({ _id: postId })
 
-        post.comments.unshift({ body, username, createdAt: new Date().toISOString() })
+      if (post) {
+        post.comments.unshift({
+          body,
+          username,
+          createdAt: new Date().toISOString(),
+        })
         await post.save()
-
         return post
-      } catch (error) {
-        console.error(error)
-        throw new Error(error)
+      } else throw new UserInputError('Post not found')
+    },
+
+    deleteComment: async (_, { postId, commentId }, context) => {
+      const { username } = checkAuth(context)
+
+      const post = await Post.findOne({ _id: postId })
+
+      if (post) {
+        console.log(post.comments)
+        const commentIndex = post.comments.findIndex((c) => c._id.toString() === commentId)
+        console.log(commentIndex)
+        if (post.comments[commentIndex].username === username) {
+          post.comments.splice(commentIndex, 1)
+          await post.save()
+
+          return post
+        } else {
+          throw new AuthenticationError('Action not allowed')
+        }
+      } else {
+        throw new UserInputError('Post not found')
       }
     },
-  },
-
-  deleteComment: async (parent, { commentId, postId }, ctx, info) => {
-    try {
-      const { username } = checkAuth(ctx)
-
-      const post = await Post.findById(postId)
-      if (!post) throw new UserInputError(`Post with id ${postId} not found`)
-
-      const commentIndex = post.comments.findIndex((c) => c.id === commentId)
-      if (post.comments[commentIndex].username !== username) throw new AuthenticationError('Unauthorized')
-
-      post.comments = post.comments.splice(commentId, 1)
-      await post.save()
-
-      return post
-    } catch (error) {
-      console.error(error)
-      throw new Error(error)
-    }
   },
 }

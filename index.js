@@ -1,5 +1,5 @@
 const dotenv = require('dotenv')
-const { ApolloServer } = require('apollo-server')
+const { ApolloServer, PubSub } = require('apollo-server')
 const connectDB = require('./db/db')
 const typeDefs = require('./graphql/typeDefs')
 const resolvers = require('./graphql/resolvers')
@@ -9,7 +9,9 @@ dotenv.config({ path: './config/config.env' })
 
 connectDB()
 
-const server = new ApolloServer({ typeDefs, resolvers, context: ({ req, res }) => ({ req }) })
+const pubsub = new PubSub()
+
+const server = new ApolloServer({ typeDefs, resolvers, context: ({ req, res }) => ({ req, pubsub }) })
 
 const PORT = process.env.PORT || 5000
 
