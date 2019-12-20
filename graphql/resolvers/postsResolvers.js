@@ -35,6 +35,10 @@ module.exports = {
 
         const post = await Post.create({ body, user: user.id, username: user.username, createdAt: new Date().toISOString() })
 
+        await context.pubsub.publish('NEW_POST', {
+          newPost: post,
+        })
+
         return post
       } catch (error) {
         console.error(error)
