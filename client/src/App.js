@@ -12,18 +12,18 @@ const HomePage = React.lazy(() => import('./Pages/HomePage/HomePage'))
 const App = () => {
   return (
     <>
-      <Suspense fallback={<p>Loading...</p>}>
-        <Router>
-          <Container>
+      <Container>
+        <Suspense fallback={<p>Loading...</p>}>
+          <Router>
+            <MenuBar />
             <Switch>
-              <MenuBar />
               <Route exact path="/" component={HomePage} />
               <Route exact path="/login" component={LoginPage} />
               <Route exact path="/register" component={RegisterPage} />
             </Switch>
-          </Container>
-        </Router>
-      </Suspense>
+          </Router>
+        </Suspense>
+      </Container>
     </>
   )
 }
