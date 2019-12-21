@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useForm } from '../../hooks/useForm'
 import { useMutation } from '@apollo/react-hooks'
 import { REGISTER_USER } from './registerPageMutations'
 import { Button, Form } from 'semantic-ui-react'
 import { useHistory } from 'react-router-dom'
+import { AuthContext } from '../../context/authContext'
 
 const initialState = {
   username: '',
@@ -13,13 +14,14 @@ const initialState = {
 }
 
 const RegisterPage = () => {
+  const authContext = useContext(AuthContext)
   const history = useHistory()
   const [errors, setErrors] = useState({})
   const { values, onChange, onSubmit, resetForm } = useForm(registerUser, initialState)
 
   const [addUser, { loading, error }] = useMutation(REGISTER_USER, {
-    update(proxy, result) {
-      console.log(result)
+    update(proxy, { data }) {
+      authContext.loginUser(data.register)
       history.push('/')
     },
     variables: values,

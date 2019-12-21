@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useForm } from '../../hooks/useForm'
 import { useMutation } from '@apollo/react-hooks'
 import { LOGIN_USER } from './loginPageMutations'
 import { Button, Form } from 'semantic-ui-react'
 import { useHistory } from 'react-router-dom'
+import { AuthContext } from '../../context/authContext'
 
 const initialState = {
   email: '',
@@ -11,15 +12,15 @@ const initialState = {
 }
 
 const LoginPage = () => {
+  const authContext = useContext(AuthContext)
   const history = useHistory()
   const [errors, setErrors] = useState({})
   const { values, onChange, onSubmit, resetForm } = useForm(loginUser, initialState)
-
-  const [userLogin, { loading, error }] = useMutation(LOGIN_USER, {
-    update(proxy, result) {
-      console.log(result)
+  // console.log(authContext)
+  const [userLogin, { loading }] = useMutation(LOGIN_USER, {
+    update(proxy, { data }) {
+      authContext.loginUser(data.login)
       history.push('/')
-      console.log(proxy)
     },
     variables: values,
     onError(err) {

@@ -8,6 +8,7 @@ const initialState = {
   user: null,
 }
 
+// Persist user state from localstorage on page reload
 const token = localStorage.getItem('jwtToken')
 
 if (token) {
@@ -32,7 +33,7 @@ const authReducer = (state, action) => {
     case LOGIN_USER:
       return {
         ...state,
-        user: payload.user,
+        user: payload,
       }
     case LOGOUT_USER:
       return {
@@ -50,7 +51,7 @@ const AuthProvider = (props) => {
 
   const loginUser = (userData) => {
     localStorage.setItem('jwtToken', userData.token)
-    dispatch({ type: LOGIN_USER, payload: { userData } })
+    dispatch({ type: LOGIN_USER, payload: userData })
   }
 
   const logoutUser = () => {
