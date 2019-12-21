@@ -31,7 +31,7 @@ const PostForm = () => {
       <h2>Create a post:</h2>
       <Form.Field>
         <Form.Input placeholder="Message" name="body" onChange={onChange} value={values.body} />
-        <Button type="submit" color="teal">
+        <Button type="submit" color="teal" disabled={loading}>
           Submit
         </Button>
       </Form.Field>
