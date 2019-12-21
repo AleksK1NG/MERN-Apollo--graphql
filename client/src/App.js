@@ -5,6 +5,7 @@ import 'semantic-ui-css/semantic.min.css'
 import MenuBar from './components/Shared/MenuBar'
 import { Container } from 'semantic-ui-react'
 import { AuthProvider } from './context/authContext'
+import AuthRoute from './Pages/AuthRoute/AuthRoute'
 
 const LoginPage = React.lazy(() => import('./Pages/LoginPage/LoginPage'))
 const RegisterPage = React.lazy(() => import('./Pages/RegisterPage/RegisterPage'))
@@ -20,8 +21,8 @@ const App = () => {
               <MenuBar />
               <Switch>
                 <Route exact path="/" component={HomePage} />
-                <Route exact path="/login" component={LoginPage} />
-                <Route exact path="/register" component={RegisterPage} />
+                <AuthRoute exact path="/login" component={LoginPage} />
+                <AuthRoute exact path="/register" component={RegisterPage} />
               </Switch>
             </Router>
           </Suspense>
