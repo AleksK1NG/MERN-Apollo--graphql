@@ -1,20 +1,19 @@
 import React from 'react'
 
-import { Redirect, Route, Switch } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
+import AuthRoute from '../Pages/AuthRoute/AuthRoute'
 
-const LoginPage = React.lazy(() => import('../Pages/LoginPage'))
-const RegisterPage = React.lazy(() => import('../Pages/RegisterPage'))
-const HomePage = React.lazy(() => import('../Pages/HomePage'))
+const LoginPage = React.lazy(() => import('../Pages/LoginPage/LoginPage'))
+const RegisterPage = React.lazy(() => import('../Pages/RegisterPage/RegisterPage'))
+const HomePage = React.lazy(() => import('../Pages/HomePage/HomePage'))
 
 const Routes = () => {
   return (
-    <section className="container">
-      <Switch>
-        <Route exact path="/" component={HomePage} />
-        <Route exact path="/login" component={LoginPage} />
-        <Route exact path="/register" component={RegisterPage} />
-      </Switch>
-    </section>
+    <Switch>
+      <Route exact path="/" component={HomePage} />
+      <AuthRoute exact path="/login" component={LoginPage} />
+      <AuthRoute exact path="/register" component={RegisterPage} />
+    </Switch>
   )
 }
 export default Routes

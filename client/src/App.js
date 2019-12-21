@@ -1,15 +1,13 @@
 import React, { Suspense } from 'react'
-import './App.css'
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
-import 'semantic-ui-css/semantic.min.css'
+import { BrowserRouter as Router } from 'react-router-dom'
 import MenuBar from './components/Shared/MenuBar'
 import { Container } from 'semantic-ui-react'
 import { AuthProvider } from './context/authContext'
-import AuthRoute from './Pages/AuthRoute/AuthRoute'
 
-const LoginPage = React.lazy(() => import('./Pages/LoginPage/LoginPage'))
-const RegisterPage = React.lazy(() => import('./Pages/RegisterPage/RegisterPage'))
-const HomePage = React.lazy(() => import('./Pages/HomePage/HomePage'))
+import './App.css'
+import 'semantic-ui-css/semantic.min.css'
+
+const Routes = React.lazy(() => import('./Routes/routes'))
 
 const App = () => {
   return (
@@ -19,11 +17,7 @@ const App = () => {
           <Suspense fallback={<p>Loading...</p>}>
             <Router>
               <MenuBar />
-              <Switch>
-                <Route exact path="/" component={HomePage} />
-                <AuthRoute exact path="/login" component={LoginPage} />
-                <AuthRoute exact path="/register" component={RegisterPage} />
-              </Switch>
+              <Routes />
             </Router>
           </Suspense>
         </Container>
