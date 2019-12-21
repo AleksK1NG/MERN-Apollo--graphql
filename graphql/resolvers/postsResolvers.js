@@ -33,6 +33,10 @@ module.exports = {
       try {
         const user = checkAuth(context)
 
+        if (body.trim() === '') {
+          throw new Error('Post body must not be empty')
+        }
+
         const post = await Post.create({ body, user: user.id, username: user.username, createdAt: new Date().toISOString() })
 
         await context.pubsub.publish('NEW_POST', {

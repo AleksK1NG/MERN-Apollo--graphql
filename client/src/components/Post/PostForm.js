@@ -13,7 +13,7 @@ const initialState = {
 
 const PostForm = () => {
   const { values, onChange, onSubmit, resetForm } = useForm(createPostCallback, initialState)
-  const [createPost, { loading }] = useMutation(CREATE_POST_MUTATION, {
+  const [createPost, { loading, error }] = useMutation(CREATE_POST_MUTATION, {
     variables: values,
     update(proxy, result) {
       const cache = proxy.readQuery({
@@ -38,15 +38,30 @@ const PostForm = () => {
   }
 
   return (
-    <Form onSubmit={onSubmit}>
-      <h2>Create a post:</h2>
-      <Form.Field>
-        <Form.Input placeholder="Message" name="body" onChange={onChange} value={values.body} />
-        <Button type="submit" color="teal" disabled={loading}>
-          Submit
-        </Button>
-      </Form.Field>
-    </Form>
+    <>
+      <Form onSubmit={onSubmit}>
+        <h2>Create a post:</h2>
+        <Form.Field>
+          <Form.Input
+            placeholder="Hi World!"
+            name="body"
+            onChange={onChange}
+            value={values.body}
+            error={error ? true : false}
+          />
+          <Button type="submit" color="teal" disabled={loading}>
+            Submit
+          </Button>
+        </Form.Field>
+      </Form>
+      {error && (
+        <div className="ui error message" style={{ marginBottom: 20 }}>
+          <ul className="list">
+            <li>{error.graphQLErrors[0].message}</li>
+          </ul>
+        </div>
+      )}
+    </>
   )
 }
 
