@@ -1,11 +1,14 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { useQuery } from '@apollo/react-hooks'
 import { FETCH_POSTS_QUERY } from './homePageQuery'
 
 import { Grid } from 'semantic-ui-react'
 import PostCard from '../../components/Post/PostCard'
+import { AuthContext } from '../../context/authContext'
+import PostForm from '../../components/Post/PostForm'
 
 const HomePage = () => {
+  const { user } = useContext(AuthContext)
   const { loading, data, error } = useQuery(FETCH_POSTS_QUERY)
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error</p>
@@ -18,6 +21,11 @@ const HomePage = () => {
         <h1>Recent Posts</h1>
       </Grid.Row>
       <Grid.Row>
+        {user && (
+          <Grid.Column>
+            <PostForm />
+          </Grid.Column>
+        )}
         {loading ? (
           <h1>Loading posts..</h1>
         ) : (

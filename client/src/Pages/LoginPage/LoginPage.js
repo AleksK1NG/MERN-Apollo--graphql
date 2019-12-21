@@ -16,7 +16,7 @@ const LoginPage = () => {
   const history = useHistory()
   const [errors, setErrors] = useState({})
   const { values, onChange, onSubmit, resetForm } = useForm(loginUser, initialState)
-  // console.log(authContext)
+
   const [userLogin, { loading }] = useMutation(LOGIN_USER, {
     update(proxy, { data }) {
       authContext.loginUser(data.login)

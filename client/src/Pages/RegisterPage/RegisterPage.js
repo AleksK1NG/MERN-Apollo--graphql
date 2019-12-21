@@ -19,7 +19,7 @@ const RegisterPage = () => {
   const [errors, setErrors] = useState({})
   const { values, onChange, onSubmit, resetForm } = useForm(registerUser, initialState)
 
-  const [addUser, { loading, error }] = useMutation(REGISTER_USER, {
+  const [addUser, { loading }] = useMutation(REGISTER_USER, {
     update(proxy, { data }) {
       authContext.loginUser(data.register)
       history.push('/')
