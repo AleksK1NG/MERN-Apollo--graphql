@@ -10,16 +10,18 @@ const httpLink = createHttpLink({
   uri: 'http://localhost:5000',
 })
 
-const authLink = setContext(() => {
+// https://www.apollographql.com/docs/react/networking/authentication/
+const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('jwtToken')
   return {
     headers: {
       Authorization: token ? `Bearer ${token}` : '',
+      ...headers,
     },
   }
 })
 
-const client = new ApolloClient({
+export const client = new ApolloClient({
   link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
 })
