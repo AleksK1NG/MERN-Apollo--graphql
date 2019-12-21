@@ -3,6 +3,7 @@ import { useForm } from '../../hooks/useForm'
 import { useMutation } from '@apollo/react-hooks'
 import { REGISTER_USER } from './registerPageMutations'
 import { Button, Form } from 'semantic-ui-react'
+import { useHistory } from 'react-router-dom'
 
 const initialState = {
   username: '',
@@ -12,16 +13,19 @@ const initialState = {
 }
 
 const RegisterPage = () => {
+  const history = useHistory()
   const [errors, setErrors] = useState({})
   const { values, onChange, onSubmit, resetForm } = useForm(registerUser, initialState)
   const [addUser, { loading, error }] = useMutation(REGISTER_USER, {
     update(proxy, result) {
       console.log(result)
+      history.push('/')
     },
     variables: values,
     onError(err) {
       console.error(err)
-    }
+      setErrors(err.graphQLErrors[0].extensions.exception.errors)
+    },
   })
 
   function registerUser() {
@@ -73,7 +77,7 @@ const RegisterPage = () => {
           Register
         </Button>
       </Form>
-      {errors && Object.keys(errors).length > 0 && (
+      {Object.keys(errors).length > 0 && (
         <div className="ui error message">
           <ul className="list">
             {Object.values(errors).map((value) => (
