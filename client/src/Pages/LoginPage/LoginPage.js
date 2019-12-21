@@ -14,10 +14,12 @@ const LoginPage = () => {
   const history = useHistory()
   const [errors, setErrors] = useState({})
   const { values, onChange, onSubmit, resetForm } = useForm(loginUser, initialState)
+
   const [userLogin, { loading, error }] = useMutation(LOGIN_USER, {
     update(proxy, result) {
       console.log(result)
       history.push('/')
+      console.log(proxy)
     },
     variables: values,
     onError(err) {
