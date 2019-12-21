@@ -4,6 +4,8 @@ import { useMutation } from '@apollo/react-hooks'
 import { useForm } from '../../hooks/useForm'
 
 import { CREATE_POST_MUTATION } from './postMutations'
+import { FETCH_POSTS_QUERY } from '../../Pages/HomePage/homePageQuery'
+import { client } from '../../ApolloProvider/ApolloProvider'
 
 const initialState = {
   body: '',
@@ -11,14 +13,23 @@ const initialState = {
 
 const PostForm = () => {
   const { values, onChange, onSubmit, resetForm } = useForm(createPostCallback, initialState)
-  const [createPost, { loading, error }] = useMutation(CREATE_POST_MUTATION, {
+  const [createPost, { loading }] = useMutation(CREATE_POST_MUTATION, {
+    variables: values,
     update(proxy, result) {
-      console.log(result)
+      const cache = proxy.readQuery({
+        query: FETCH_POSTS_QUERY,
+      })
+
+      client.cache.writeQuery({
+        query: FETCH_POSTS_QUERY,
+        data: {
+          getAllPosts: [result.data.createPost, ...cache.getAllPosts],
+        },
+      })
     },
     onError(err) {
       console.error(err)
     },
-    variables: values,
   })
 
   function createPostCallback() {

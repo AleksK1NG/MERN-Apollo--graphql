@@ -9,7 +9,7 @@ import PostForm from '../../components/Post/PostForm'
 
 const HomePage = () => {
   const { user } = useContext(AuthContext)
-  const { loading, data, error } = useQuery(FETCH_POSTS_QUERY)
+  const { loading, data, error } = useQuery(FETCH_POSTS_QUERY, { notifyOnNetworkStatusChange: true })
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error</p>
 
