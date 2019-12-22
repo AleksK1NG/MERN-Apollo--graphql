@@ -4,6 +4,7 @@ import { Button, Confirm, Icon } from 'semantic-ui-react'
 import { DELETE_POST_MUTATION } from './deleteButtonMutation'
 import { FETCH_POSTS_QUERY } from '../../Pages/HomePage/homePageQuery'
 import { DELETE_COMMENT_MUTATION } from '../../Pages/PostPage/postPageMutations'
+import MyPopup from '../Shared/ItemPopup'
 
 const DeleteButton = ({ postId, commentId, callback }) => {
   const [confirmOpen, setConfirmOpen] = useState(false)
@@ -11,7 +12,7 @@ const DeleteButton = ({ postId, commentId, callback }) => {
 
   const mutation = commentId ? DELETE_COMMENT_MUTATION : DELETE_POST_MUTATION
 
-  const [deletePostOrMutation, { loading }] = useMutation(mutation, {
+  const [deletePostOrMutation] = useMutation(mutation, {
     variables: { postId, commentId },
     update(proxy, result) {
       setConfirmOpen(false)
@@ -37,9 +38,11 @@ const DeleteButton = ({ postId, commentId, callback }) => {
 
   return (
     <>
-      <Button as="div" color="red" floated="right" onClick={handleConfirm}>
-        <Icon name="trash" style={{ margin: 0 }} />
-      </Button>
+      <MyPopup content={commentId ? 'Delete comment' : 'Delete post'}>
+        <Button as="div" color="red" floated="right" onClick={handleConfirm}>
+          <Icon name="trash" style={{ margin: 0 }} />
+        </Button>
+      </MyPopup>
       <Confirm open={confirmOpen} onCancel={handleConfirm} onConfirm={deletePostOrMutation} />
     </>
   )
