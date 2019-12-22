@@ -7,7 +7,7 @@ import { AuthContext } from '../../context/authContext'
 import { useParams, useHistory } from 'react-router-dom'
 import { FETCH_POST_QUERY } from './postPageQuery'
 import DeleteButton from '../../components/DeleteButton/DeleteButton'
-import { SUBMIT_COMMENT_MUTATION, DELETE_COMMENT_MUTATION } from './postPageMutations'
+import { SUBMIT_COMMENT_MUTATION } from './postPageMutations'
 
 const PostPage = () => {
   const { user } = useContext(AuthContext)
@@ -20,14 +20,11 @@ const PostPage = () => {
     variables: { postId },
   })
 
-
   const [submitComment] = useMutation(SUBMIT_COMMENT_MUTATION, {
     variables: { postId, body: comment },
     update(proxy, result) {
-
       setComment('')
       commentInputRef.current.blur()
-      console.log('submit comment result ', result)
     },
     onError(err) {
       console.error(err)
