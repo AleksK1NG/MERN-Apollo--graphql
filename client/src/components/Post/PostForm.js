@@ -41,8 +41,10 @@ const PostForm = () => {
     <>
       <Form onSubmit={onSubmit}>
         <h2>Create a post:</h2>
+
         <Form.Field>
           <Form.Input placeholder="Hi World!" name="body" onChange={onChange} value={values.body} error={error ? true : false} />
+
           <Button type="submit" color="teal" disabled={loading}>
             Submit
           </Button>
