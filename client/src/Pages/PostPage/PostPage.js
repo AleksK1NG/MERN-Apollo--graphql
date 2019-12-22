@@ -16,7 +16,6 @@ const PostPage = () => {
   const { data, loading } = useQuery(FETCH_POST_QUERY, {
     variables: { postId },
   })
-  console.log(data?.getSinglePost)
 
   function deletePostCallback() {
     history.push('/')
